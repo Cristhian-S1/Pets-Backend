@@ -1,0 +1,2 @@
+###Obtener todas las publicaciones
+GET http://localhost:3000/publicaciones
