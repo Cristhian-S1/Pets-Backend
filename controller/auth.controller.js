@@ -1,5 +1,6 @@
 import * as ModelosAuth from "../models/auth.model.js";
 import jwt from "jsonwebtoken";
+import { verificarToken } from "../verificador.token.js";
 
 export const login = async (req, res) => {
   try {
@@ -30,29 +31,8 @@ export const login = async (req, res) => {
   }
 };
 
-/*
-
-Esta seccion tiene que ir aparte para que el backend sepa que el tipo esta logeado.
-Si queremos proteger ciertas rutas para usuarios logeados seria algo como
-petsRouter.post("/publicar", verificarToken, crearPublicacion);
-
-export const verificarToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
-    return res.status(401).json({ error: "Token no proporcionado" });
-  }
-
-  const token = authHeader.split(" ")[1]; // formato: Bearer xxx
-
-  try {
-    const decoded = jwt.verify(token, process.env.SECRET_JTW_KEY);
-    req.user = decoded; // ← aquí guardamos la info del usuario
-    next();
-  } catch (err) {
-    return res.status(403).json({ error: "Token inválido o expirado" });
-  }
+export const protegido = async (req, res) => {
+  return res.status(200).json({ message: "You have access" });
 };
-*/
 
 //export const register = async (req, res) => {};

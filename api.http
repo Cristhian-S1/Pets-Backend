@@ -9,3 +9,7 @@ Content-Type: application/json
     "email": "maria@gomez.com",
     "password": "pass123"
 }
+
+###Acceder a una ruta protegida, el token obtiene al realizar login
+GET http://localhost:3000/pets/auth/protegido
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjM4MzE2NDIsImV4cCI6MTc2MzgzNTI0Mn0.NOalwpnTczcW0zm7-RbReuxcAl7RPmbws2zVGBo0Tpg
