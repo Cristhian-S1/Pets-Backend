@@ -1,11 +1,10 @@
-import * as ModelosAuth from "../models/auth.model.js";
+import * as modeloAuth from "../models/auth.model.js";
 import jwt from "jsonwebtoken";
-import { verificarToken } from "../verificador.token.js";
 
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const logeo = await ModelosAuth.loginModelo(email, password);
+    const logeo = await modeloAuth.loginModelo(email, password);
 
     if (!logeo) {
       return res.status(401).json({ error: "Email o contrasena incorrectos" });

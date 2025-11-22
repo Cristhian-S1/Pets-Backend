@@ -1,5 +1,4 @@
-###Obtener todas las publicaciones
-GET http://localhost:3000/pets/publicaciones
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjM4MzE2NDIsImV4cCI6MTc2MzgzNTI0Mn0.NOalwpnTczcW0zm7-RbReuxcAl7RPmbws2zVGBo0Tpg
 
 ###Obtener todas las publicaciones
 POST http://localhost:3000/pets/auth/login
@@ -12,4 +11,18 @@ Content-Type: application/json
 
 ###Acceder a una ruta protegida, el token obtiene al realizar login
 GET http://localhost:3000/pets/auth/protegido
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjM4MzE2NDIsImV4cCI6MTc2MzgzNTI0Mn0.NOalwpnTczcW0zm7-RbReuxcAl7RPmbws2zVGBo0Tpg
+Authorization: Bearer {{token}}
+
+###Obtener todas las publicaciones
+GET http://localhost:3000/pets/publicaciones
+
+###Crear una publicacion
+POST http://localhost:3000/pets/publicaciones/crear
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "pu_titulo": "Se me escapo el byron!!!",
+    "pu_descripcion": "Se fue a bolivia a recuperar el auto",
+    "pu_imagen": "byron.png"
+}
