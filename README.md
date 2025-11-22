@@ -42,6 +42,7 @@ create table publicacion (
    pu_fecha       date,
    pu_eliminacion boolean,
    pu_estado      boolean,
+   pu_ubicacion   varchar(254),
 
    us_id          integer,
    fo_id          integer
@@ -120,19 +121,19 @@ INSERT INTO foro (fo_titulo, fo_descripcion, fo_eliminacion, us_id) VALUES
 ('Foro Mascotas Medellín', 'Comunidad de mascotas perdidas en Medellín', false, 3);
 
 -- 4. Insertar 12 publicaciones (4 asociadas a foros)
-INSERT INTO publicacion (pu_titulo, pu_descripcion, pu_image, pu_fecha, pu_eliminacion, pu_estado, us_id, fo_id) VALUES
-('Bobby desaparecido', 'Perro pastor alemán perdido en parque nacional', 'https://example.com/bobby.jpg', '2023-05-10', false, false, 2, 1),
-('Gato siamés extraviado', 'Max desapareció cerca del centro comercial', 'https://example.com/max.jpg', '2023-05-11', false, false, 4, 1),
-('Loro hablador', 'Perdió su jaula en el barrio Laureles', 'https://example.com/loro.jpg', '2023-05-12', false, false, 5, 2),
-('Canario amarillo', 'Voló de su jaula en Belén', 'https://example.com/canario.jpg', '2023-05-13', false, false, 6, 2),
-('Persa blanco', 'Se asustó con los fuegos artificiales', 'https://example.com/persa.jpg', '2023-05-14', false, false, 7, NULL),
-('Cachorro dorado', 'Extraviado en metro Estadio', 'https://example.com/cachorro.jpg', '2023-05-15', false, false, 8, NULL),
-('Gato negro', 'Visto última vez en jardín botánico', 'https://example.com/negro.jpg', '2023-05-16', false, false, 9, NULL),
-('Perro marrón', 'Desapareció en complejo deportivo', 'https://example.com/marron.jpg', '2023-05-17', false, false, 10, NULL),
-('Hámster', 'Escapó de su jaula en zona norte', 'https://example.com/hamster.jpg', '2023-05-18', false, false, 1, NULL),
-('Conejo enano', 'Se perdió en el parque de los pies descalzos', 'https://example.com/conejo.jpg', '2023-05-19', false, false, 2, NULL),
-('Tortuga', 'Desapareció del jardín de la casa', 'https://example.com/tortuga.jpg', '2023-05-20', false, false, 3, NULL),
-('Perro salchicha', 'Last seen near Universidad Nacional', 'https://example.com/salchicha.jpg', '2023-05-21', false, false, 4, NULL);
+INSERT INTO publicacion (pu_titulo, pu_descripcion, pu_image, pu_fecha, pu_eliminacion, pu_estado, pu_ubicacion, us_id, fo_id) VALUES
+('Bobby desaparecido', 'Perro pastor alemán perdido en parque nacional', 'https://example.com/bobby.jpg', '2023-05-10', false, false, 'Arica', 2, 1),
+('Gato siamés extraviado', 'Max desapareció cerca del centro comercial', 'https://example.com/max.jpg', '2023-05-11', false, false,'Arica', 4, 1),
+('Loro hablador', 'Perdió su jaula en el barrio Laureles', 'https://example.com/loro.jpg', '2023-05-12', false, false,'Arica', 5, 2),
+('Canario amarillo', 'Voló de su jaula en Belén', 'https://example.com/canario.jpg', '2023-05-13', false, false,'Arica', 6, 2),
+('Persa blanco', 'Se asustó con los fuegos artificiales', 'https://example.com/persa.jpg', '2023-05-14', false, false,'Arica', 7, NULL),
+('Cachorro dorado', 'Extraviado en metro Estadio', 'https://example.com/cachorro.jpg', '2023-05-15', false, false,'Arica', 8, NULL),
+('Gato negro', 'Visto última vez en jardín botánico', 'https://example.com/negro.jpg', '2023-05-16', false, false,'Arica', 9, NULL),
+('Perro marrón', 'Desapareció en complejo deportivo', 'https://example.com/marron.jpg', '2023-05-17', false, false,'Arica', 10, NULL),
+('Hámster', 'Escapó de su jaula en zona norte', 'https://example.com/hamster.jpg', '2023-05-18', false, false,'Arica', 1, NULL),
+('Conejo enano', 'Se perdió en el parque de los pies descalzos', 'https://example.com/conejo.jpg', '2023-05-19', false, false,'Arica', 2, NULL),
+('Tortuga', 'Desapareció del jardín de la casa', 'https://example.com/tortuga.jpg', '2023-05-20', false, false,'Arica', 3, NULL),
+('Perro salchicha', 'Last seen near Universidad Nacional', 'https://example.com/salchicha.jpg', '2023-05-21', false, false,'Arica', 4, NULL);
 
 -- 5. Asignar etiquetas a publicaciones
 INSERT INTO publicacion_etiqueta (et_id, pu_id) VALUES
