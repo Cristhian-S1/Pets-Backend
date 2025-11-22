@@ -1,9 +1,9 @@
-import * as Modelos from "../models/consultas.js";
+import * as ModelosProductos from "../models/producto.model.js";
 
 //Un simple retorno de las publicaciones
 export const getPublicaciones = async (req, res) => {
   try {
-    const publicaciones = await Modelos.obtenerPublicaciones();
+    const publicaciones = await ModelosProductos.obtenerPublicaciones();
 
     if (!publicaciones) {
       return res

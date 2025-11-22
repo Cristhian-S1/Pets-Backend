@@ -1,2 +1,11 @@
 ###Obtener todas las publicaciones
-GET http://localhost:3000/publicaciones
+GET http://localhost:3000/pets/publicaciones
+
+###Obtener todas las publicaciones
+POST http://localhost:3000/pets/auth/login
+Content-Type: application/json
+
+{
+    "email": "maria@gomez.com",
+    "password": "pass123"
+}

@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import pkg from "pg";
-import { petsRouter } from "./routes/orquetador.js";
+import dotenv from "dotenv";
+import { petsRouter } from "./routes/orquestador.routes.js";
 
 //Data para conectarse al esquema de postgresql, si no creaste un user en postgresql entonces ocupa los valores por defecto(sin contar la database porque esta si se crea)!
 const { Pool } = pkg;
@@ -13,6 +14,8 @@ export const pool = new Pool({
   port: 5432,
 });
 
+//dotenv es necesario para cargar las variables de entorno
+dotenv.config();
 const app = express();
 
 //Middleware
@@ -23,8 +26,8 @@ app.use(cors());
 app.use(express.json());
 
 //Rutas (Middleware implicito)
-//Si despues del http://localhost:3000 agrega /publicaciones, entonces lo mandara a todos los endpoints disponibles para publicaciones
-app.use("/publicaciones", petsRouter);
+//Si despues del http://localhost:3000 agrega /pets, entonces lo mandara a todos los endpoints disponibles para publicaciones
+app.use("/pets", petsRouter);
 
 //Fin de Middleware
 
