@@ -1,2 +1,29 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjM4NTE3MjQsImV4cCI6MTc2Mzg1NTMyNH0.sJyHO46WR1K5_SW0Hg0vE-VLpTBrNNLQkEv6R6eHDkA
+
 ###Obtener todas las publicaciones
-GET http://localhost:3000/publicaciones
+POST http://localhost:3000/pets/auth/login
+Content-Type: application/json
+
+{
+    "email": "maria@gomez.com",
+    "password": "pass123"
+}
+
+###Acceder a una ruta protegida, el token obtiene al realizar login
+GET http://localhost:3000/pets/auth/protegido
+Authorization: Bearer {{token}}
+
+###Obtener todas las publicaciones
+GET http://localhost:3000/pets/publicaciones
+
+###Crear una publicacion
+POST http://localhost:3000/pets/publicaciones/crear
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "pu_titulo": "Triteza se escapo",
+    "pu_descripcion": "tristeza esta triste",
+    "pu_ubicacion": "Bolivia, la paz",
+    "pu_imagen": "sad.png"
+}
