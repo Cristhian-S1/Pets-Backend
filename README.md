@@ -1,3 +1,14 @@
+# IMPORTANTE
+
+DEFINIR EL archivo .ENV con los datos de su BD y la clave que desee para el JWT
+
+- USER=nombre-queso
+- HOST=localhost
+- DATABASE=idk PASSWORD=clave-queso-www
+- PORT=5432
+
+- SECRET_JWT_KEY=clave-queso
+
 # Pets
 Repositorio de Backend para las mascotas perdidas.
 
