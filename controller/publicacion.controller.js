@@ -1,12 +1,11 @@
-import * as modeloProducto from "../models/producto.model.js";
+import * as modeloPublicacion from "../models/publicacion.model.js";
 import jwt from "jsonwebtoken";
 
 //Tenemos muchas opciones, entre ellas se va a variar entre constantes con funciones anonimas asincronicas o funciones declaradas aincronicas
-
 //Un simple retorno de las publicaciones
 export const getPublicaciones = async (req, res) => {
   try {
-    const publicaciones = await modeloProducto.obtenerPublicaciones();
+    const publicaciones = await modeloPublicacion.obtenerPublicaciones();
 
     if (!publicaciones) {
       return res.status(404).json({
@@ -37,7 +36,7 @@ export async function crearPublicacion(req, res) {
         .json({ cod: 400, msj: "Datos incompletos", datos: null });
     }
 
-    const publicacion = await modeloProducto.insertarPublicacion(
+    const publicacion = await modeloPublicacion.insertarPublicacion(
       pu_titulo,
       pu_descripcion,
       pu_imagen,
@@ -55,3 +54,22 @@ export async function crearPublicacion(req, res) {
       .json({ cod: 500, msj: "Error al crear una publicacion", datos: null });
   }
 }
+
+export const getAllPostsController = async (req, res) => {
+    try {
+        const publicaciones = await modeloPublicacion.getAllPosts();
+        res.json(publicaciones);
+    } catch (error) {
+        console.error("Error al obtener publicaciones:", error);
+        res.status(500).json({ error: "Error al obtener publicaciones" });
+    }
+};
+
+export async function getAllTagsController(req, res) {
+    try {
+        const resultado = await modeloPublicacion.getAllTags();
+        return res.status(200).json(resultado)
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    };
+};

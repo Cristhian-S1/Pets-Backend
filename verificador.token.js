@@ -6,9 +6,6 @@ export function verificarToken(req, res, next) {
 
   //Este split alucin es porque el header tiene Bearer eyJhbG.... y el resto del token, por tanto, ["Bearer", "eyJhbG..."]
   const token = header.split(" ")[1];
-  console.log("request y su contenido", req);
-  console.log("Este es el header: ", header);
-  console.log("Este es el token: ", token);
   if (!token) {
     return res.status(401).json({ message: "Token no proporcionado" });
   }

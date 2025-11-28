@@ -45,3 +45,38 @@ export async function insertarPublicacion(
 
   return resultado.rows[0];
 }
+
+export async function getAllPosts() {
+  const resultado = await pool.query(`
+    SELECT 
+        p.*,
+        u.us_nombre || ' ' || u.us_apellido AS us_nombre_completo,
+        u.us_contacto,
+        COALESCE(
+            (
+                SELECT json_agg(
+                    json_build_object(
+                        'et_id', et.et_id,
+                        'et_nombre', et.et_nombre
+                    )
+                )
+                FROM etiqueta et
+                WHERE et.et_id IN (
+                    SELECT pe.et_id
+                    FROM publicacion_etiqueta pe
+                    WHERE pe.pu_id = p.pu_id
+                )
+            ), '[]'
+        ) AS etiquetas
+    FROM usuarios u 
+    LEFT JOIN publicacion p ON u.us_id = p.us_id
+    GROUP BY 
+        p.pu_id, us_nombre_completo, u.us_contacto
+  `);
+  return resultado.rows;
+};
+
+export async function getAllTags() {
+    const resultado = await pool.query(`select * from etiqueta`);
+    return resultado.rows;
+};
