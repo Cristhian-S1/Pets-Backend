@@ -30,8 +30,14 @@ export const getPublicaciones = async (req, res) => {
 export async function crearPublicacion(req, res) {
   const cliente = await pool.connect();
   try {
-    const { pu_titulo, pu_descripcion, pu_imagen, pu_ubicacion, pu_imagenes } =
-      req.body;
+    const {
+      pu_titulo,
+      pu_descripcion,
+      pu_imagen,
+      pu_ubicacion,
+      pu_imagenes,
+      pu_etiquetas,
+    } = req.body;
 
     if (!pu_titulo || !pu_descripcion || !pu_imagen || !pu_ubicacion) {
       return res
@@ -59,12 +65,21 @@ export async function crearPublicacion(req, res) {
       );
     }
 
+    let etiquetas = [];
+    if (Array.isArray(pu_etiquetas) && pu_etiquetas.length > 0) {
+      etiquetas = await modeloPublicacion.insertarEtiquetas(
+        cliente,
+        publicacion.pu_id,
+        pu_etiquetas
+      );
+    }
+
     await cliente.query("commit");
 
     res.status(201).json({
       cod: 201,
       msj: "Publicacion creada!",
-      datos: { ...publicacion, imagenes },
+      datos: { ...publicacion, imagenes, etiquetas },
     });
   } catch (error) {
     await cliente.query("rollback");
@@ -74,6 +89,15 @@ export async function crearPublicacion(req, res) {
       .json({ cod: 500, msj: "Error al crear una publicacion", datos: null });
   } finally {
     cliente.release();
+  }
+}
+
+export async function getAllTagsController(req, res) {
+  try {
+    const resultado = await modeloPublicacion.getAllTags();
+    return res.status(200).json(resultado);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -135,12 +159,3 @@ export const getAllPostsController = async (req, res) => {
     res.status(500).json({ error: "Error al obtener publicaciones" });
   }
 };
-
-export async function getAllTagsController(req, res) {
-  try {
-    const resultado = await modeloPublicacion.getAllTags();
-    return res.status(200).json(resultado);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-}

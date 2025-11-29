@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjQ0MzcxNzUsImV4cCI6MTc2NDQ0MDc3NX0.OKhd0JwIQ6j7NhDlUoW0UnwLyxCHomF9zxLjJ-0MDJI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjQ0NDk2MzEsImV4cCI6MTc2NDQ1MzIzMX0.DR_RLVCmkCDnGnTO4xtV6484jxS4iaQ6Pm8n5_Lj9XY
 
 ###Obtener todas las publicaciones
 POST http://localhost:3000/pets/auth/login
@@ -33,28 +33,30 @@ GET http://localhost:3000/pets/publicaciones
 ###Obtener todas las publicaciones
 GET http://localhost:3000/pets/verDetalles/1
 
-petsRouter.get("/verDetalles", obtenerDetalles);
-
 ###Crear una publicacion
 POST http://localhost:3000/pets/publicaciones/crear
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "pu_titulo": "Nuevo",
-    "pu_descripcion": "Lo mas nuevo",
-    "pu_ubicacion": "Lo novedoso",
-    "pu_imagen": "nuevo.png",
-    "pu_imagenes": [
-        "new2.png",
-        "new3.png"
-    ]
+  "pu_titulo": "Cara",
+  "pu_descripcion": "Rostro humano",
+  "pu_ubicacion": "Arica",
+  "pu_imagen": "cara.png",
+  "pu_imagenes": [
+    "olo.png",
+    "wwos.png"
+  ],
+  "pu_etiquetas": [
+    1,
+    3
+  ]
 }
 
+###Obtener todas las etiquetas
+GET http://localhost:3000/pets/tags
 
 ###Obtener todas las publicaciones
 GET http://localhost:3000/pets/posts
 
-###Obtener todas las etiquetas
-GET http://localhost:3000/pets/tags
 

@@ -61,6 +61,27 @@ export async function insertarImagenes(cliente, pu_id, urls) {
   return results;
 }
 
+export async function insertarEtiquetas(cliente, pu_id, etiquetas) {
+  const results = [];
+
+  for (const et_id of etiquetas) {
+    const { rows } = await cliente.query(
+      `INSERT INTO publicacion_etiqueta (pu_id, et_id)
+       VALUES ($1, $2)
+       RETURNING *;`,
+      [pu_id, et_id]
+    );
+    results.push(rows[0]);
+  }
+
+  return results;
+}
+
+export async function getAllTags() {
+  const resultado = await pool.query(`select * from etiqueta`);
+  return resultado.rows;
+}
+
 export async function visualizarDetalles(pu_id) {
   const resultado = await pool.query(
     `select pu_id, pu_titulo, 
@@ -118,10 +139,5 @@ export async function getAllPosts() {
     GROUP BY 
         p.pu_id, us_nombre_completo, u.us_contacto
   `);
-  return resultado.rows;
-}
-
-export async function getAllTags() {
-  const resultado = await pool.query(`select * from etiqueta`);
   return resultado.rows;
 }
