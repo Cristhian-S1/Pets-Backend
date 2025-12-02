@@ -5,7 +5,7 @@ import { pool } from "../app.js";
 //Consultas, logicas, validacioes, todo lo maneja el modelo!
 //No usamos ORM por simplicidad ante lo que ofrece las consultas SQL, DI NO A ORM!
 export const obtenerPublicaciones = async () => {
-  const resultado = await pool.query(`select pu_titulo,
+  const resultado = await pool.query(`select pu_id, pu_titulo,
        pu_descripcion,
        pu_image,
        pu_fecha,
@@ -135,9 +135,10 @@ export async function getAllPosts() {
             ), '[]'
         ) AS etiquetas
     FROM usuarios u 
-    LEFT JOIN publicacion p ON u.us_id = p.us_id
+    JOIN publicacion p ON u.us_id = p.us_id
     GROUP BY 
         p.pu_id, us_nombre_completo, u.us_contacto
+        order by pu_fecha desc
   `);
   return resultado.rows;
 }
