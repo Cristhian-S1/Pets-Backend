@@ -142,3 +142,21 @@ export async function getAllPosts() {
   `);
   return resultado.rows;
 }
+
+
+export async function obtenerPublicacionesPorUsuario(cliente, idUsuario) {
+  const query = `
+    SELECT
+        p.pu_id, p.pu_titulo, p.pu_descripcion, p.pu_image, p.pu_ubicacion,
+        p.pu_fecha, p.us_id,p.pu_estado
+    FROM 
+        publicacion p
+    WHERE 
+        p.us_id = $1
+    ORDER BY 
+        p.pu_fecha DESC;
+  `;
+
+  const res = await cliente.query(query, [idUsuario]);
+  return res.rows;
+}

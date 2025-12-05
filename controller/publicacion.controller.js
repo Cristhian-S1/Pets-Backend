@@ -92,6 +92,55 @@ export async function crearPublicacion(req, res) {
   }
 }
 
+
+export async function obtenerPublicacionesPorUsuario(req, res) {
+
+  const idUsuario = req.id;
+
+  if (!idUsuario) {
+    return res
+      .status(401)
+      .json({ cod: 401, msj: "ID de usuario no proporcionado (No Autorizado)", datos: null });
+  }
+
+  const cliente = await pool.connect();
+
+  try {
+    // 1. Llamar al modelo para obtener las publicaciones, incluyendo sus imágenes y etiquetas.
+    const publicaciones = await modeloPublicacion.obtenerPublicacionesPorUsuario(
+      cliente,
+      idUsuario
+    );
+
+    // 2. Verificar si se encontraron publicaciones
+    if (publicaciones.length === 0) {
+      return res.status(404).json({
+        cod: 404,
+        msj: "No se encontraron publicaciones para este usuario",
+        datos: [],
+      });
+    }
+
+    // 3. Responder con el estado 200 (OK) y las publicaciones encontradas.
+    res.status(200).json({
+      cod: 200,
+      msj: `Se encontraron ${publicaciones.length} publicaciones.`,
+      datos: publicaciones,
+    });
+  } catch (error) {
+    console.error(`Error al obtener publicaciones del usuario ${idUsuario}`, error);
+
+    // 4. Manejar el error de la base de datos
+    res
+      .status(500)
+      .json({ cod: 500, msj: "Error al obtener las publicaciones", datos: null });
+  } finally {
+    // 5. Liberar la conexión del pool
+    cliente.release();
+  }
+}
+
+
 export async function getAllTagsController(req, res) {
   try {
     const resultado = await modeloPublicacion.getAllTags();
