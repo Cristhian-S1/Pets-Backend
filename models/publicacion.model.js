@@ -195,3 +195,29 @@ export async function actualizarPerfilUsuario(us_id, us_nombre, us_apellido, us_
     throw error;
   }
 }
+
+
+// Obtener todos los comentarios de una publicación por pu_id
+export async function obtenerComentariosPorPublicacion(pu_id) {
+  const { rows } = await pool.query(
+    `SELECT *
+     FROM comentario c
+     JOIN usuarios u
+	    ON c.us_id = u.us_id
+     WHERE pu_id = $1
+     ORDER BY cm_fecha ASC`,
+    [pu_id]
+  );
+  return rows;
+}
+
+export async function insertarComentario(cm_contenido, us_id, pu_id) {
+  const { rows } = await pool.query(
+    `INSERT INTO comentario (cm_contenido, cm_fecha, us_id, pu_id)
+     VALUES ($1, NOW(), $2, $3)
+     RETURNING *`,
+    [cm_contenido, us_id, pu_id]
+  );
+  return rows[0];
+}
+

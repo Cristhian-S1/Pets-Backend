@@ -176,7 +176,6 @@ export async function obtenerDetalles(req, res) {
     const { pu_id } = req.params;
 
     const detalles = await modeloPublicacion.visualizarDetalles(pu_id);
-
     if (!detalles || detalles.length === 0) {
       return res.status(404).json({
         cod: 404,
@@ -186,7 +185,6 @@ export async function obtenerDetalles(req, res) {
     }
 
     const imagenes = await modeloPublicacion.obtenerListaImagenes(pu_id);
-
     if (!imagenes) {
       return res.status(404).json({
         cod: 404,
@@ -196,7 +194,6 @@ export async function obtenerDetalles(req, res) {
     }
 
     const etiquetas = await modeloPublicacion.obtenerListaEtiquetas(pu_id);
-
     if (!etiquetas || etiquetas.length === 0) {
       return res.status(404).json({
         cod: 404,
@@ -205,10 +202,13 @@ export async function obtenerDetalles(req, res) {
       });
     }
 
+    // USANDO la función obtenerComentariosPorPublicacion
+    const comentarios = await modeloPublicacion.obtenerComentariosPorPublicacion(pu_id);
+
     res.status(200).json({
       cod: 200,
       msj: "Exito",
-      datos: { ...detalles, imagenes, etiquetas },
+      datos: { ...detalles, imagenes, etiquetas, comentarios },
     });
   } catch (error) {
     console.error("Error obteniendo los detalles de la publicacion: ", error);
@@ -220,6 +220,7 @@ export async function obtenerDetalles(req, res) {
   }
 }
 
+
 export const getAllPostsController = async (req, res) => {
   try {
     const publicaciones = await modeloPublicacion.getAllPosts();
@@ -229,3 +230,55 @@ export const getAllPostsController = async (req, res) => {
     res.status(500).json({ error: "Error al obtener publicaciones" });
   }
 };
+
+
+
+export async function crearComentario(req, res) {
+  try {
+    const { pu_id, cm_contenido } = req.body;
+
+    // 🔴 VALIDACIONES OBLIGATORIAS
+    if (!req.usuario || !req.usuario.id) {
+      return res.status(401).json({
+        cod: 401,
+        msj: "Usuario no autenticado",
+        datos: null,
+      });
+    }
+
+    if (!pu_id || !cm_contenido) {
+      return res.status(400).json({
+        cod: 400,
+        msj: "Datos incompletos",
+        datos: null,
+      });
+    }
+
+    const us_id = req.usuario.id;
+
+    const comentario = await modeloPublicacion.insertarComentario(
+      cm_contenido,
+      us_id,
+      pu_id
+    );
+  console.log("REQ.USUARIO:", req.usuario);
+
+    return res.status(201).json({
+      cod: 201,
+      msj: "Comentario creado",
+      datos: comentario,
+    });
+
+  } catch (error) {
+    // 👇 ESTO ES CLAVE PARA DEPURAR
+    console.error("ERROR REAL crearComentario:", error);
+
+    return res.status(500).json({
+      cod: 500,
+      msj: "Error al crear comentario",
+      datos: null,
+    });
+  }
+}
+
+

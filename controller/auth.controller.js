@@ -9,6 +9,7 @@ export const login = async (req, res) => {
     if (!logeo) {
       return res.status(401).json({cod: 401, msj: "Email o contrasena incorrectos", datos: null});
     }
+    console.log("SECRET_JWT_KEY:", process.env.SECRET_JWT_KEY);
 
     const token = jwt.sign(
       {
