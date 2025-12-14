@@ -33,7 +33,12 @@ export async function obtenerUsuarios() {
 
   return resultado.rows;
 }
-export async function actualizarPerfilUsuario(us_id, us_nombre, us_apellido, us_contacto) {
+export async function actualizarPerfilUsuario(
+  us_id,
+  us_nombre,
+  us_apellido,
+  us_contacto
+) {
   try {
     const resultado = await pool.query(
       `UPDATE usuarios

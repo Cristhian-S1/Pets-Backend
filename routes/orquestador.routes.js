@@ -7,12 +7,19 @@ import {
   obtenerDetalles,
   obtenerPublicacionesPorUsuario,
   cambiarEstadoPublicacion,
-  crearComentario
+  crearComentario,
 } from "../controller/publicacion.controller.js";
-import { actualizarPerfil, perfilUsuario } from "../controller/usuario.controller.js";
+import {
+  actualizarPerfil,
+  perfilUsuario,
+} from "../controller/usuario.controller.js";
 import { protegido, login, register } from "../controller/auth.controller.js";
 import { verificarToken } from "../verificador.token.js";
-import { crearForo, listarForos, verForo } from "../controller/foro.controller.js";
+import {
+  crearForo,
+  listarForos,
+  verForo,
+} from "../controller/foro.controller.js";
 
 export const petsRouter = Router();
 
@@ -22,12 +29,7 @@ petsRouter.get("/publicaciones", getPublicaciones);
 petsRouter.get("/verDetalles/:pu_id", obtenerDetalles);
 petsRouter.get("/perfil", verificarToken, perfilUsuario);
 petsRouter.put("/perfil", verificarToken, actualizarPerfil);
-petsRouter.post(
-  "/comentarios",
-  verificarToken,   
-  crearComentario
-);
-
+petsRouter.post("/comentarios", verificarToken, crearComentario);
 
 petsRouter.get("/posts", getAllPostsController);
 petsRouter.get("/my-posts", verificarToken, obtenerPublicacionesPorUsuario);
@@ -40,6 +42,6 @@ petsRouter.get("/auth/protegido", verificarToken, protegido);
 
 petsRouter.get("/foros", listarForos);
 petsRouter.get("/foros/:id", verForo);
-petsRouter.post("/foros", crearForo);
+petsRouter.post("/foros", verificarToken, crearForo);
 
 export default petsRouter;

@@ -69,7 +69,7 @@ export async function insertarEtiquetas(cliente, pu_id, etiquetas) {
       `INSERT INTO publicacion_etiqueta (pu_id, et_id)
        VALUES ($1, $2)
        RETURNING *;`,
-      [pu_id, et_id] 
+      [pu_id, et_id]
     );
     results.push(rows[0]);
   }
@@ -143,7 +143,6 @@ export async function getAllPosts() {
   return resultado.rows;
 }
 
-
 export async function obtenerPublicacionesPorUsuario(cliente, idUsuario) {
   const query = `
     SELECT
@@ -177,8 +176,12 @@ export async function actualizarEstadoPublicacion(pu_id, pu_estado) {
   }
 }
 
-
-export async function actualizarPerfilUsuario(us_id, us_nombre, us_apellido, us_contacto) {
+export async function actualizarPerfilUsuario(
+  us_id,
+  us_nombre,
+  us_apellido,
+  us_contacto
+) {
   try {
     const resultado = await pool.query(
       `UPDATE usuarios
@@ -195,7 +198,6 @@ export async function actualizarPerfilUsuario(us_id, us_nombre, us_apellido, us_
     throw error;
   }
 }
-
 
 // Obtener todos los comentarios de una publicación por pu_id
 export async function obtenerComentariosPorPublicacion(pu_id) {
@@ -220,4 +222,3 @@ export async function insertarComentario(cm_contenido, us_id, pu_id) {
   );
   return rows[0];
 }
-

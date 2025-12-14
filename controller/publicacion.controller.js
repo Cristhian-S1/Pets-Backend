@@ -1,5 +1,4 @@
 import * as modeloPublicacion from "../models/publicacion.model.js";
-import jwt from "jsonwebtoken";
 import { pool } from "../app.js";
 
 //Tenemos muchas opciones, entre ellas se va a variar entre constantes con funciones anonimas asincronicas o funciones declaradas aincronicas
@@ -47,6 +46,7 @@ export async function crearPublicacion(req, res) {
 
     await cliente.query("begin");
 
+    console.log(req.id);
     const publicacion = await modeloPublicacion.insertarPublicacion(
       cliente,
       pu_titulo,
@@ -92,25 +92,26 @@ export async function crearPublicacion(req, res) {
   }
 }
 
-
 export async function obtenerPublicacionesPorUsuario(req, res) {
-
   const idUsuario = req.id;
 
   if (!idUsuario) {
-    return res
-      .status(401)
-      .json({ cod: 401, msj: "ID de usuario no proporcionado (No Autorizado)", datos: null });
+    return res.status(401).json({
+      cod: 401,
+      msj: "ID de usuario no proporcionado (No Autorizado)",
+      datos: null,
+    });
   }
 
   const cliente = await pool.connect();
 
   try {
     // 1. Llamar al modelo para obtener las publicaciones, incluyendo sus imágenes y etiquetas.
-    const publicaciones = await modeloPublicacion.obtenerPublicacionesPorUsuario(
-      cliente,
-      idUsuario
-    );
+    const publicaciones =
+      await modeloPublicacion.obtenerPublicacionesPorUsuario(
+        cliente,
+        idUsuario
+      );
 
     // 2. Verificar si se encontraron publicaciones
     if (publicaciones.length === 0) {
@@ -128,12 +129,17 @@ export async function obtenerPublicacionesPorUsuario(req, res) {
       datos: publicaciones,
     });
   } catch (error) {
-    console.error(`Error al obtener publicaciones del usuario ${idUsuario}`, error);
+    console.error(
+      `Error al obtener publicaciones del usuario ${idUsuario}`,
+      error
+    );
 
     // 4. Manejar el error de la base de datos
-    res
-      .status(500)
-      .json({ cod: 500, msj: "Error al obtener las publicaciones", datos: null });
+    res.status(500).json({
+      cod: 500,
+      msj: "Error al obtener las publicaciones",
+      datos: null,
+    });
   } finally {
     // 5. Liberar la conexión del pool
     cliente.release();
@@ -146,13 +152,20 @@ export async function cambiarEstadoPublicacion(req, res) {
     const { pu_estado } = req.body;
 
     if (!pu_id || pu_estado === undefined) {
-      return res.status(400).json({ error: "Faltan datos requeridos (id o estado)" });
+      return res
+        .status(400)
+        .json({ error: "Faltan datos requeridos (id o estado)" });
     }
 
-    const resultado = await modeloPublicacion.actualizarEstadoPublicacion(pu_id, pu_estado);
+    const resultado = await modeloPublicacion.actualizarEstadoPublicacion(
+      pu_id,
+      pu_estado
+    );
 
     if (!resultado) {
-      return res.status(404).json({ error: "Publicación no encontrada o no se pudo actualizar" });
+      return res
+        .status(404)
+        .json({ error: "Publicación no encontrada o no se pudo actualizar" });
     }
 
     return res.status(200).json(resultado);
@@ -203,7 +216,8 @@ export async function obtenerDetalles(req, res) {
     }
 
     // USANDO la función obtenerComentariosPorPublicacion
-    const comentarios = await modeloPublicacion.obtenerComentariosPorPublicacion(pu_id);
+    const comentarios =
+      await modeloPublicacion.obtenerComentariosPorPublicacion(pu_id);
 
     res.status(200).json({
       cod: 200,
@@ -220,7 +234,6 @@ export async function obtenerDetalles(req, res) {
   }
 }
 
-
 export const getAllPostsController = async (req, res) => {
   try {
     const publicaciones = await modeloPublicacion.getAllPosts();
@@ -231,13 +244,10 @@ export const getAllPostsController = async (req, res) => {
   }
 };
 
-
-
 export async function crearComentario(req, res) {
   try {
     const { pu_id, cm_contenido } = req.body;
 
-    // 🔴 VALIDACIONES OBLIGATORIAS
     if (!req.usuario || !req.usuario.id) {
       return res.status(401).json({
         cod: 401,
@@ -261,16 +271,14 @@ export async function crearComentario(req, res) {
       us_id,
       pu_id
     );
-  console.log("REQ.USUARIO:", req.usuario);
+    console.log("REQ.USUARIO:", req.usuario);
 
     return res.status(201).json({
       cod: 201,
       msj: "Comentario creado",
       datos: comentario,
     });
-
   } catch (error) {
-    // 👇 ESTO ES CLAVE PARA DEPURAR
     console.error("ERROR REAL crearComentario:", error);
 
     return res.status(500).json({
@@ -280,5 +288,3 @@ export async function crearComentario(req, res) {
     });
   }
 }
-
-

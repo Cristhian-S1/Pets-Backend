@@ -9,24 +9,25 @@ export const loginModelo = async (us_email, us_contrasena) => {
   return result.rows[0];
 };
 
-export async function registerCheck(us_email){
+export async function registerCheck(us_email) {
   const result = await pool.query(
-    `SELECT us_id FROM usuarios WHERE us_email = $1`, [us_email]
+    `SELECT us_id FROM usuarios WHERE us_email = $1`,
+    [us_email]
   );
   return result.rows[0];
 }
 
-export async function register(us_nombre, us_apellido, us_email, us_contrasena, us_contacto){
+export async function register(
+  us_nombre,
+  us_apellido,
+  us_email,
+  us_contrasena,
+  us_contacto
+) {
   const result = await pool.query(
-        `INSERT INTO usuarios (us_nombre, us_apellido, us_email, us_contrasena, us_contacto) 
+    `INSERT INTO usuarios (us_nombre, us_apellido, us_email, us_contrasena, us_contacto) 
               VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [
-        us_nombre,
-        us_apellido,
-        us_email,
-        us_contrasena,
-        us_contacto,
-      ]
-  )
+    [us_nombre, us_apellido, us_email, us_contrasena, us_contacto]
+  );
   return result.rows[0];
 }
