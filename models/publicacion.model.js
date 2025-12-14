@@ -69,7 +69,7 @@ export async function insertarEtiquetas(cliente, pu_id, etiquetas) {
       `INSERT INTO publicacion_etiqueta (pu_id, et_id)
        VALUES ($1, $2)
        RETURNING *;`,
-      [pu_id, et_id]
+      [pu_id, et_id] 
     );
     results.push(rows[0]);
   }

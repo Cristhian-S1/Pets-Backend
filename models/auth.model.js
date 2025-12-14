@@ -16,12 +16,13 @@ export async function registerCheck(us_email){
   return result.rows[0];
 }
 
-export async function register(us_nombre, us_email, us_contrasena, us_contacto){
+export async function register(us_nombre, us_apellido, us_email, us_contrasena, us_contacto){
   const result = await pool.query(
-        `INSERT INTO usuarios (us_nombre, us_email, us_contrasena, us_contacto) 
-              VALUES ($1, $2, $3, $4) RETURNING *`,
+        `INSERT INTO usuarios (us_nombre, us_apellido, us_email, us_contrasena, us_contacto) 
+              VALUES ($1, $2, $3, $4, $5) RETURNING *`,
       [
         us_nombre,
+        us_apellido,
         us_email,
         us_contrasena,
         us_contacto,

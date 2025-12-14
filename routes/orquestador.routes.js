@@ -8,6 +8,7 @@ import {
 } from "../controller/publicacion.controller.js";
 import { protegido, login, register } from "../controller/auth.controller.js";
 import { verificarToken } from "../verificador.token.js";
+import { crearForo, listarForos, verForo } from "../controller/foro.controller.js";
 
 export const petsRouter = Router();
 
@@ -22,3 +23,9 @@ petsRouter.get("/tags", getAllTagsController);
 petsRouter.post("/auth/login", login);
 petsRouter.post("/auth/register", register);
 petsRouter.get("/auth/protegido", verificarToken, protegido);
+
+petsRouter.get("/foros", listarForos);
+petsRouter.get("/foros/:id", verForo);
+petsRouter.post("/foros", crearForo);
+
+export default petsRouter;

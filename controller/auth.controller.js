@@ -31,20 +31,20 @@ export const login = async (req, res) => {
 
 export async function register(req,res){
   try{
-    const {us_nombre,us_email,us_contrasena, us_contacto} = req.body;
+    const {us_nombre, us_apellido, us_email,us_contrasena, us_contacto} = req.body;
 
-    if(!us_nombre || !us_email || !us_contrasena || !us_contacto){
+    if(!us_nombre || !us_apellido || !us_email || !us_contrasena || !us_contacto){
       return res.status(400).json({cod: 400, msj: "Datos incompletos", datos: null});
     }
 
-    console.log("Entra", us_email, us_nombre, us_contrasena, us_contacto);
+    console.log("Entra", us_email, us_nombre, us_apellido, us_contrasena, us_contacto);
     const existente = await modeloAuth.registerCheck(us_email);
 
     if(existente){
       return res.status(409).json({cod: 409, msj: "El email ya está registrado", datos: null});
     }
 
-    const result = await modeloAuth.register(us_nombre, us_email, us_contrasena, us_contacto);
+    const result = await modeloAuth.register(us_nombre, us_apellido, us_email, us_contrasena, us_contacto);
 
     res.json({cod: 201, msj: "Usuario registrado exitosamente", datos: result});
   }catch(error){
