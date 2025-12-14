@@ -112,12 +112,20 @@ join publicacion_etiqueta using(et_id) where pu_id = $1`,
   return resultado.rows;
 }
 
-export async function getAllPosts() {
-  const resultado = await pool.query(`
+export async function getAllPosts(us_id_actual = null) {
+  const query = `
     SELECT 
         p.*,
         u.us_nombre AS us_nombre_completo,
         u.us_contacto,
+        -- Subconsulta para contar el total de likes
+        (SELECT COUNT(*)::int FROM reacciones r WHERE r.pu_id = p.pu_id) AS total_likes,
+        -- Subconsulta para saber si el usuario actual dio like (devuelve true/false)
+        CASE 
+            WHEN $1::int IS NOT NULL THEN 
+                EXISTS(SELECT 1 FROM reacciones r WHERE r.pu_id = p.pu_id AND r.us_id = $1)
+            ELSE false 
+        END AS dio_like,
         COALESCE(
             (
                 SELECT json_agg(
@@ -136,9 +144,33 @@ export async function getAllPosts() {
         ) AS etiquetas
     FROM usuarios u 
     JOIN publicacion p ON u.us_id = p.us_id
+    WHERE p.pu_eliminacion is false
     GROUP BY 
-        p.pu_id, us_nombre_completo, u.us_contacto
-        order by pu_fecha desc
-  `);
+        p.pu_id, u.us_nombre, u.us_contacto
+    ORDER BY p.pu_fecha DESC
+  `;
+
+  const resultado = await pool.query(query, [us_id_actual]);
   return resultado.rows;
+}
+// 1. Lógica para dar/quitar like
+export async function gestionarReaccion(cliente, pu_id, us_id) {
+  const check = await cliente.query(
+    "SELECT re_id FROM reacciones WHERE pu_id = $1 AND us_id = $2",
+    [pu_id, us_id]
+  );
+
+  if (check.rows.length > 0) {
+    await cliente.query("DELETE FROM reacciones WHERE pu_id = $1 AND us_id = $2", [pu_id, us_id]);
+    return { like: false }; // Se quitó el like
+  } else {
+    await cliente.query("INSERT INTO reacciones (pu_id, us_id) VALUES ($1, $2)", [pu_id, us_id]);
+    return { like: true }; // Se agregó el like
+  }
+}
+
+// 2. Obtener conteo rápido (para actualizar UI)
+export async function obtenerConteoLikes(pu_id) {
+    const res = await pool.query("SELECT COUNT(*)::int as t FROM reacciones WHERE pu_id=$1", [pu_id]);
+    return res.rows[0].t;
 }

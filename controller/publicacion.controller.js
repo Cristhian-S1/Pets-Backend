@@ -152,10 +152,38 @@ export async function obtenerDetalles(req, res) {
 
 export const getAllPostsController = async (req, res) => {
   try {
-    const publicaciones = await modeloPublicacion.getAllPosts();
+    const us_id = req.id || null; // Viene del middleware opcional
+    const publicaciones = await modeloPublicacion.getAllPosts(us_id);
     res.json(publicaciones);
   } catch (error) {
-    console.error("Error al obtener publicaciones:", error);
+    console.error(error);
     res.status(500).json({ error: "Error al obtener publicaciones" });
+  }
+};
+
+export const reaccionarPublicacion = async (req, res) => {
+  const cliente = await pool.connect();
+  try {
+    const { pu_id } = req.body;
+    const us_id = req.id; 
+
+    if(!pu_id) return res.status(400).json({msj: "Falta ID publicación"});
+
+    await cliente.query("begin");
+    const accion = await modeloPublicacion.gestionarReaccion(cliente, pu_id, us_id);
+    await cliente.query("commit");
+
+    const total = await modeloPublicacion.obtenerConteoLikes(pu_id);
+
+    res.status(200).json({
+      cod: 200,
+      msj: accion.like ? "Like dado" : "Like quitado",
+      datos: { liked: accion.like, total_likes: total }
+    });
+  } catch (error) {
+    await cliente.query("rollback");
+    res.status(500).json({ msj: "Error servidor" });
+  } finally {
+    cliente.release();
   }
 };
