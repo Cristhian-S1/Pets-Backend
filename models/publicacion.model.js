@@ -142,3 +142,82 @@ export async function getAllPosts() {
   `);
   return resultado.rows;
 }
+
+
+export async function obtenerPublicacionesPorUsuario(cliente, idUsuario) {
+  const query = `
+    SELECT
+        p.pu_id, p.pu_titulo, p.pu_descripcion, p.pu_image, p.pu_ubicacion,
+        p.pu_fecha, p.us_id,p.pu_estado
+    FROM 
+        publicacion p
+    WHERE 
+        p.us_id = $1
+    ORDER BY 
+        p.pu_fecha DESC;
+  `;
+
+  const res = await cliente.query(query, [idUsuario]);
+  return res.rows;
+}
+
+export async function actualizarEstadoPublicacion(pu_id, pu_estado) {
+  try {
+    const resultado = await pool.query(
+      `UPDATE publicacion
+       SET pu_estado = $1
+       WHERE pu_id = $2
+       RETURNING pu_id, pu_estado`,
+      [pu_estado, pu_id]
+    );
+    return resultado.rows[0];
+  } catch (error) {
+    console.error("Error en modelo actualizarEstadoPublicacion:", error);
+    throw error;
+  }
+}
+
+
+export async function actualizarPerfilUsuario(us_id, us_nombre, us_apellido, us_contacto) {
+  try {
+    const resultado = await pool.query(
+      `UPDATE usuarios
+       SET us_nombre = $1,
+           us_apellido = $2,
+           us_contacto = $3
+       WHERE us_id = $4
+       RETURNING us_id, us_nombre, us_apellido, us_email, us_contacto`,
+      [us_nombre, us_apellido, us_contacto, us_id]
+    );
+    return resultado.rows[0]; // devuelve usuario actualizado
+  } catch (error) {
+    console.error("Error en modelo actualizarPerfilUsuario:", error);
+    throw error;
+  }
+}
+
+
+// Obtener todos los comentarios de una publicación por pu_id
+export async function obtenerComentariosPorPublicacion(pu_id) {
+  const { rows } = await pool.query(
+    `SELECT *
+     FROM comentario c
+     JOIN usuarios u
+	    ON c.us_id = u.us_id
+     WHERE pu_id = $1
+     ORDER BY cm_fecha ASC`,
+    [pu_id]
+  );
+  return rows;
+}
+
+export async function insertarComentario(cm_contenido, us_id, pu_id) {
+  const { rows } = await pool.query(
+    `INSERT INTO comentario (cm_contenido, cm_fecha, us_id, pu_id)
+     VALUES ($1, NOW(), $2, $3)
+     RETURNING *`,
+    [cm_contenido, us_id, pu_id]
+  );
+  return rows[0];
+}
+
