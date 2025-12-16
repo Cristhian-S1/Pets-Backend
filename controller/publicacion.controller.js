@@ -248,6 +248,8 @@ export async function crearComentario(req, res) {
   try {
     const { pu_id, cm_contenido } = req.body;
 
+    console.log("aaa: ",pu_id, cm_contenido)
+
     if (!req.usuario || !req.usuario.id) {
       return res.status(401).json({
         cod: 401,
@@ -271,14 +273,16 @@ export async function crearComentario(req, res) {
       us_id,
       pu_id
     );
-    console.log("REQ.USUARIO:", req.usuario);
+  console.log("REQ.USUARIO:", req.usuario);
 
     return res.status(201).json({
       cod: 201,
       msj: "Comentario creado",
       datos: comentario,
     });
+
   } catch (error) {
+    // 👇 ESTO ES CLAVE PARA DEPURAR
     console.error("ERROR REAL crearComentario:", error);
 
     return res.status(500).json({
@@ -287,4 +291,7 @@ export async function crearComentario(req, res) {
       datos: null,
     });
   }
+
+
+
 }

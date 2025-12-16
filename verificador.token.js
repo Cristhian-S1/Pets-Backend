@@ -1,6 +1,31 @@
 import jwt from "jsonwebtoken";
 
+
+export function verificarToken(req, res, next) {
+  const header = req.header("Authorization") || "";
+  const token = header.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "Token no proporcionado" });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.SECRET_JWT_KEY);
+
+    req.usuario = {
+      id: payload.id,
+      email: payload.email,
+    };
+
+    next();
+  } catch (error) {
+    console.error("Error: ", error.message);
+    return res.status(403).json({ message: "Token no válido" });
+  }
+}
+
 //Verificar sesion mediante el token
+/** 
 export function verificarToken(req, res, next) {
   const header = req.header("Authorization") || "";
 
@@ -19,4 +44,4 @@ export function verificarToken(req, res, next) {
     console.error("Error: ", error.message);
     return res.status(403).json({ message: "Token no valido" });
   }
-}
+}*/
