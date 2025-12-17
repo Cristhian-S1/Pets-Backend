@@ -5,7 +5,7 @@ import { pool } from "../app.js";
 //Consultas, logicas, validacioes, todo lo maneja el modelo!
 //No usamos ORM por simplicidad ante lo que ofrece las consultas SQL, DI NO A ORM!
 export const obtenerPublicaciones = async () => {
-  const resultado = await pool.query(`select pu_titulo,
+  const resultado = await pool.query(`select pu_id, pu_titulo,
        pu_descripcion,
        pu_image,
        pu_fecha,
@@ -21,13 +21,14 @@ using ( us_id )
 };
 
 export async function insertarPublicacion(
+  cliente,
   pu_titulo,
   pu_descripcion,
   pu_imagen,
   pu_ubicacion,
   us_id
 ) {
-  const resultado = await pool.query(
+  const resultado = await cliente.query(
     `insert into publicacion (   
    pu_titulo,
    pu_descripcion,
@@ -42,6 +43,73 @@ export async function insertarPublicacion(
   );
 
   return resultado.rows[0];
+}
+
+export async function insertarImagenes(cliente, pu_id, urls) {
+  const results = [];
+
+  for (const url of urls) {
+    const { rows } = await cliente.query(
+      `INSERT INTO publicacion_imagen (pu_id, pui_url)
+       VALUES ($1, $2)
+       RETURNING *;`,
+      [pu_id, url]
+    );
+    results.push(rows[0]);
+  }
+
+  return results;
+}
+
+export async function insertarEtiquetas(cliente, pu_id, etiquetas) {
+  const results = [];
+
+  for (const et_id of etiquetas) {
+    const { rows } = await cliente.query(
+      `INSERT INTO publicacion_etiqueta (pu_id, et_id)
+       VALUES ($1, $2)
+       RETURNING *;`,
+      [pu_id, et_id]
+    );
+    results.push(rows[0]);
+  }
+
+  return results;
+}
+
+export async function getAllTags() {
+  const resultado = await pool.query(`select * from etiqueta`);
+  return resultado.rows;
+}
+
+export async function visualizarDetalles(pu_id) {
+  const resultado = await pool.query(
+    `select pu_id, pu_titulo, 
+    pu_descripcion, pu_image, pu_fecha, pu_estado, pu_ubicacion from publicacion
+where pu_id = $1`,
+    [pu_id]
+  );
+
+  return resultado.rows[0];
+}
+
+export async function obtenerListaImagenes(pu_id) {
+  const resultado = await pool.query(
+    `select * from publicacion_imagen where pu_id = $1`,
+    [pu_id]
+  );
+
+  return resultado.rows;
+}
+
+export async function obtenerListaEtiquetas(pu_id) {
+  const resultado = await pool.query(
+    `select et_nombre from etiqueta
+join publicacion_etiqueta using(et_id) where pu_id = $1`,
+    [pu_id]
+  );
+
+  return resultado.rows;
 }
 
 export async function getAllPosts() {
@@ -67,14 +135,90 @@ export async function getAllPosts() {
             ), '[]'
         ) AS etiquetas
     FROM usuarios u 
-    LEFT JOIN publicacion p ON u.us_id = p.us_id
+    JOIN publicacion p ON u.us_id = p.us_id
     GROUP BY 
         p.pu_id, us_nombre_completo, u.us_contacto
+        order by pu_fecha desc
   `);
   return resultado.rows;
-};
+}
 
-export async function getAllTags() {
-    const resultado = await pool.query(`select * from etiqueta`);
-    return resultado.rows;
-};
+export async function obtenerPublicacionesPorUsuario(cliente, idUsuario) {
+  const query = `
+    SELECT
+        p.pu_id, p.pu_titulo, p.pu_descripcion, p.pu_image, p.pu_ubicacion,
+        p.pu_fecha, p.us_id,p.pu_estado
+    FROM 
+        publicacion p
+    WHERE 
+        p.us_id = $1
+    ORDER BY 
+        p.pu_fecha DESC;
+  `;
+
+  const res = await cliente.query(query, [idUsuario]);
+  return res.rows;
+}
+
+export async function actualizarEstadoPublicacion(pu_id, pu_estado) {
+  try {
+    const resultado = await pool.query(
+      `UPDATE publicacion
+       SET pu_estado = $1
+       WHERE pu_id = $2
+       RETURNING pu_id, pu_estado`,
+      [pu_estado, pu_id]
+    );
+    return resultado.rows[0];
+  } catch (error) {
+    console.error("Error en modelo actualizarEstadoPublicacion:", error);
+    throw error;
+  }
+}
+
+export async function actualizarPerfilUsuario(
+  us_id,
+  us_nombre,
+  us_apellido,
+  us_contacto
+) {
+  try {
+    const resultado = await pool.query(
+      `UPDATE usuarios
+       SET us_nombre = $1,
+           us_apellido = $2,
+           us_contacto = $3
+       WHERE us_id = $4
+       RETURNING us_id, us_nombre, us_apellido, us_email, us_contacto`,
+      [us_nombre, us_apellido, us_contacto, us_id]
+    );
+    return resultado.rows[0]; // devuelve usuario actualizado
+  } catch (error) {
+    console.error("Error en modelo actualizarPerfilUsuario:", error);
+    throw error;
+  }
+}
+
+// Obtener todos los comentarios de una publicación por pu_id
+export async function obtenerComentariosPorPublicacion(pu_id) {
+  const { rows } = await pool.query(
+    `SELECT *
+     FROM comentario c
+     JOIN usuarios u
+	    ON c.us_id = u.us_id
+     WHERE pu_id = $1
+     ORDER BY cm_fecha ASC`,
+    [pu_id]
+  );
+  return rows;
+}
+
+export async function insertarComentario(cm_contenido, us_id, pu_id) {
+  const { rows } = await pool.query(
+    `INSERT INTO comentario (cm_contenido, cm_fecha, us_id, pu_id)
+     VALUES ($1, NOW(), $2, $3)
+     RETURNING *`,
+    [cm_contenido, us_id, pu_id]
+  );
+  return rows[0];
+}

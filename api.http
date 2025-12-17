@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjQyOTc3NDUsImV4cCI6MTc2NDMwMTM0NX0.ubrj54mxnAGfCS6JPWfsFR8oaqLF9rTjUcEVwg4bNFU
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjQ0NTExNTAsImV4cCI6MTc2NDQ1NDc1MH0.ql3JZWbccE0DIyZzRrAvdy_U22budOaUMqXGkFus14o
 
 ###Obtener todas las publicaciones
 POST http://localhost:3000/pets/auth/login
@@ -30,22 +30,33 @@ Authorization: Bearer {{token}}
 ###Obtener todas las publicaciones
 GET http://localhost:3000/pets/publicaciones
 
+###Obtener todas las publicaciones
+GET http://localhost:3000/pets/verDetalles/10
+
 ###Crear una publicacion
 POST http://localhost:3000/pets/publicaciones/crear
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "pu_titulo": "Triteza se escapo",
-    "pu_descripcion": "tristeza esta triste",
-    "pu_ubicacion": "Bolivia, la paz",
-    "pu_imagen": "sad.png"
+  "pu_titulo": "Cara",
+  "pu_descripcion": "Rostro humano",
+  "pu_ubicacion": "Arica",
+  "pu_imagen": "cara.png",
+  "pu_imagenes": [
+    "olo.png",
+    "wwos.png"
+  ],
+  "pu_etiquetas": [
+    1,
+    3
+  ]
 }
 
+###Obtener todas las etiquetas
+GET http://localhost:3000/pets/tags
 
 ###Obtener todas las publicaciones
 GET http://localhost:3000/pets/posts
 
-###Obtener todas las etiquetas
-GET http://localhost:3000/pets/tags
 

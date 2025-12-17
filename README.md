@@ -10,14 +10,17 @@ DEFINIR EL archivo .ENV con los datos de su BD y la clave que desee para el JWT
 - SECRET_JWT_KEY=clave-queso
 
 # Pets
+
 Repositorio de Backend para las mascotas perdidas.
 
 # Comandos
+
 npm install --> carga las dependencias
 
 npm run dev --> ejecute el proyecto utilizando "nodemon" para cambios dinamicos en ejecucion, esto mediante el script que esta en el package.json
 
 # Consideraciones
+
 - CAMBIAR LOS DATOS DE CONEXION A SU PROPIA BASE DE DATOS POSTGRESQL
 - api.http es un archivo para probar los endpoints y este requiere de la extencion REST Client.
 - Se utiliza MVC con un middleware global
@@ -59,6 +62,13 @@ create table publicacion (
    fo_id          integer
 );
 
+create table publicacion_imagen(
+   pui_id integer generated always as identity primary key,
+   pui_url varchar(254),
+
+   pu_id integer
+);
+
 create table etiqueta (
    et_id     integer generated always as identity primary key,
    et_nombre varchar(56)
@@ -66,7 +76,7 @@ create table etiqueta (
 
 create table publicacion_etiqueta (
    puet_id integer generated always as identity primary key,
-    
+
    et_id   integer,
    pu_id   integer
 );
@@ -97,10 +107,10 @@ create table integrantes (
    fo_id    integer
 );
 
--- Asociar restricciones para que un usuario solo reaccione 
+-- Asociar restricciones para que un usuario solo reaccione
 create table reacciones (
    re_id integer generated always as identity primary key,
-   
+
    us_id integer,
    pu_id integer
 );
@@ -212,20 +222,20 @@ INSERT INTO reacciones (us_id, pu_id) VALUES
 
 ### Datos cargados en la base
 
-- **Usuarios:** 10 usuarios con datos completos  
-- **Etiquetas:** 14 etiquetas relacionadas con características de animales  
-- **Foros:** 2 foros con diferentes administradores  
+- **Usuarios:** 10 usuarios con datos completos
+- **Etiquetas:** 14 etiquetas relacionadas con características de animales
+- **Foros:** 2 foros con diferentes administradores
 
 **Publicaciones:**
-- 12 publicaciones de mascotas perdidas  
-- 4 publicaciones asociadas a foros (2 por foro)  
-- 8 publicaciones sin foro  
-- **Publicación–Etiqueta:** relaciones múltiples para caracterizar cada animal  
+
+- 12 publicaciones de mascotas perdidas
+- 4 publicaciones asociadas a foros (2 por foro)
+- 8 publicaciones sin foro
+- **Publicación–Etiqueta:** relaciones múltiples para caracterizar cada animal
 
 **Integrantes:** 4 usuarios en cada foro (8 registros total)  
 **Comentarios:** 2 comentarios por publicación (24 en total)  
-**Reacciones:** mínimo 3 reacciones por publicación (algunas tienen 4)  
+**Reacciones:** mínimo 3 reacciones por publicación (algunas tienen 4)
 
 Todas las publicaciones están **activas** (`pu_estado = true`) y **no eliminadas** (`pu_eliminacion = false`).  
 Las fechas están en orden cronológico y las imágenes usan URLs de ejemplo.
-
