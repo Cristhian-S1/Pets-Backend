@@ -222,3 +222,34 @@ export async function insertarComentario(cm_contenido, us_id, pu_id) {
   );
   return rows[0];
 }
+
+// 1. Lógica para dar/quitar like
+export async function gestionarReaccion(cliente, pu_id, us_id) {
+  const check = await cliente.query(
+    "SELECT re_id FROM reacciones WHERE pu_id = $1 AND us_id = $2",
+    [pu_id, us_id]
+  );
+
+  if (check.rows.length > 0) {
+    await cliente.query(
+      "DELETE FROM reacciones WHERE pu_id = $1 AND us_id = $2",
+      [pu_id, us_id]
+    );
+    return { like: false }; // Se quitó el like
+  } else {
+    await cliente.query(
+      "INSERT INTO reacciones (pu_id, us_id) VALUES ($1, $2)",
+      [pu_id, us_id]
+    );
+    return { like: true }; // Se agregó el like
+  }
+}
+
+// 2. Obtener conteo rápido (para actualizar UI)
+export async function obtenerConteoLikes(pu_id) {
+  const res = await pool.query(
+    "SELECT COUNT(*)::int as t FROM reacciones WHERE pu_id=$1",
+    [pu_id]
+  );
+  return res.rows[0].t;
+}

@@ -248,7 +248,7 @@ export async function crearComentario(req, res) {
   try {
     const { pu_id, cm_contenido } = req.body;
 
-    console.log("aaa: ",pu_id, cm_contenido)
+    console.log("aaa: ", pu_id, cm_contenido);
 
     if (!req.usuario || !req.usuario.id) {
       return res.status(401).json({
@@ -273,14 +273,13 @@ export async function crearComentario(req, res) {
       us_id,
       pu_id
     );
-  console.log("REQ.USUARIO:", req.usuario);
+    console.log("REQ.USUARIO:", req.usuario);
 
     return res.status(201).json({
       cod: 201,
       msj: "Comentario creado",
       datos: comentario,
     });
-
   } catch (error) {
     // 👇 ESTO ES CLAVE PARA DEPURAR
     console.error("ERROR REAL crearComentario:", error);
@@ -291,7 +290,35 @@ export async function crearComentario(req, res) {
       datos: null,
     });
   }
-
-
-
 }
+
+export const reaccionarPublicacion = async (req, res) => {
+  const cliente = await pool.connect();
+  try {
+    const { pu_id } = req.body;
+    const us_id = req.id;
+
+    if (!pu_id) return res.status(400).json({ msj: "Falta ID publicación" });
+
+    await cliente.query("begin");
+    const accion = await modeloPublicacion.gestionarReaccion(
+      cliente,
+      pu_id,
+      us_id
+    );
+    await cliente.query("commit");
+
+    const total = await modeloPublicacion.obtenerConteoLikes(pu_id);
+
+    res.status(200).json({
+      cod: 200,
+      msj: accion.like ? "Like dado" : "Like quitado",
+      datos: { liked: accion.like, total_likes: total },
+    });
+  } catch (error) {
+    await cliente.query("rollback");
+    res.status(500).json({ msj: "Error servidor" });
+  } finally {
+    cliente.release();
+  }
+};

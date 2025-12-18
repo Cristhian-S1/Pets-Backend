@@ -1,4 +1,4 @@
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXJpYUBnb21lei5jb20iLCJjb250YWN0byI6OTExMTExMTExLCJpYXQiOjE3NjQ0NTExNTAsImV4cCI6MTc2NDQ1NDc1MH0.ql3JZWbccE0DIyZzRrAvdy_U22budOaUMqXGkFus14o
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTIsImVtYWlsIjoidGlhcmFAdGlhcmEuY29tIiwiY29udGFjdG8iOjk4NzY1NDMyMSwiaWF0IjoxNzY2MDIyNzU0LCJleHAiOjE3NjYwMjYzNTR9.RHhaLi86oyrDCqPLQRRANon-evmdzNNtZGwcso922_g
 
 ###Obtener todas las publicaciones
 POST http://localhost:3000/pets/auth/login
@@ -24,7 +24,9 @@ Content-Type: application/json
 GET http://localhost:3000/pets/auth/protegido
 Authorization: Bearer {{token}}
 
-
+###DADWAW
+GET http://localhost:3000/pets/perfil
+Authorization: Bearer {{token}}
 
 
 ###Obtener todas las publicaciones

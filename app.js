@@ -16,7 +16,6 @@ export const pool = new Pool({
   port: Number(process.env.DB_PORT),
 });
 
-
 const app = express();
 
 app.use(cors());
