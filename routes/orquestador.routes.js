@@ -14,7 +14,7 @@ import {
   perfilUsuario,
 } from "../controller/usuario.controller.js";
 import { protegido, login, register } from "../controller/auth.controller.js";
-import { verificarToken } from "../verificador.token.js";
+import { verificarToken,verificarToken2} from "../verificador.token.js";
 import {
   crearForo,
   listarForos,
@@ -29,7 +29,7 @@ petsRouter.get("/publicaciones", getPublicaciones);
 petsRouter.get("/verDetalles/:pu_id", obtenerDetalles);
 petsRouter.get("/perfil", verificarToken, perfilUsuario);
 petsRouter.put("/perfil", verificarToken, actualizarPerfil);
-petsRouter.post("/comentarios", verificarToken, crearComentario);
+petsRouter.post("/comentarios", verificarToken2, crearComentario);
 
 petsRouter.get("/posts", getAllPostsController);
 petsRouter.get("/my-posts", verificarToken, obtenerPublicacionesPorUsuario);

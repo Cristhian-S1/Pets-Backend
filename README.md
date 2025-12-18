@@ -96,6 +96,9 @@ create table foro (
    fo_descripcion varchar(254),
    fo_eliminacion boolean,
 
+   fo_visible boolean, 
+   fo_icono varchar(512),
+
    us_id          integer
 );
 
