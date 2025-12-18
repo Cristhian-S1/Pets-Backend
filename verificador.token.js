@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 
-export function verificarToken(req, res, next) {
+export function verificarToken2(req, res, next) {
   const header = req.header("Authorization") || "";
   const token = header.split(" ")[1];
 
@@ -24,8 +24,7 @@ export function verificarToken(req, res, next) {
   }
 }
 
-//Verificar sesion mediante el token
-/** 
+
 export function verificarToken(req, res, next) {
   const header = req.header("Authorization") || "";
 
@@ -44,4 +43,4 @@ export function verificarToken(req, res, next) {
     console.error("Error: ", error.message);
     return res.status(403).json({ message: "Token no valido" });
   }
-}*/
+}
